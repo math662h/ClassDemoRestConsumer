@@ -11,7 +11,7 @@ namespace ClassDemoRestConsumer
     internal class Worker
     {
 
-        private const string URI = "http://localhost:50935/api/Hotels";
+        private const string URI = "http://localhost:50935/api/Faciliteter";
 
         public Worker()
         {
@@ -19,63 +19,59 @@ namespace ClassDemoRestConsumer
 
         public void Start()
         {
-            List<Hotel> hotels = GetAll();
+            List<Faciliteter> faciliteters = GetAll();
 
-            foreach (var hotel in hotels)
+            foreach (var hotel in faciliteters)
             {
-                Console.WriteLine("Hotel:: " + hotel);
+                Console.WriteLine("Faciliteter:: " + hotel.Name);
             }
 
-            Console.WriteLine("Henter nummer 55");
-            Console.WriteLine("Hotel :: " + GetOne(55));
+            Console.WriteLine("Henter nummer 6");
+            Console.WriteLine("Faciliteter :: " + GetOne(6));
 
 
-            Console.WriteLine("Sletter nummer 55");
-            Console.WriteLine("Resultat = " + Delete(55));
+            Console.WriteLine("Sletter nummer 6");
+            Console.WriteLine("Resultat = " + Delete(6));
 
-            Console.WriteLine("Opretter nyt hotel object id findes ");
-            Console.WriteLine("Resultat = " + Post(new Hotel(5, "Findes", "vej3")));
+            Console.WriteLine("Opretter nyt facilitetsobject id findes ");
+            Console.WriteLine("Resultat = " + Post(new Faciliteter(5, "Findes")));
 
-            Console.WriteLine("Opretter nyt hotel object id findes ikke");
-            Console.WriteLine("Resultat = " + Post(new Hotel(49, "Findes ikke", "vej3")));
+            Console.WriteLine("Opretter nyt facilitetobject id findes ikke");
+            Console.WriteLine("Resultat = " + Post(new Faciliteter(7, "Parkeringsplads")));
 
-            Console.WriteLine("Opdaterer nr 50");
-            Console.WriteLine("Resultat = " + Put(50, new Hotel(50, "Pouls", "Hillerød")));
+            Console.WriteLine("Opdaterer nr 6");
+            Console.WriteLine("Resultat = " + Put(6, new Faciliteter(5, "Stripperstang")));
         }
 
 
-        private List<Hotel> GetAll()
+        private List<Faciliteter> GetAll()
         {
-            List<Hotel> hoteller = new List<Hotel>();
+            List<Faciliteter> faciliteters = new List<Faciliteter>();
 
             using (HttpClient client = new HttpClient())
             {
                 Task<string> resTask = client.GetStringAsync(URI);
                 String jsonStr = resTask.Result;
 
-                hoteller = JsonConvert.DeserializeObject<List<Hotel>>(jsonStr);
+                faciliteters = JsonConvert.DeserializeObject<List<Faciliteter>>(jsonStr);
             }
 
-
-            return hoteller;
+            return faciliteters;
         }
-        
 
-
-        private Hotel GetOne(int id)
+        private Faciliteter GetOne(int id)
         {
-            Hotel hotel = new Hotel();
+            Faciliteter faciliteter = new Faciliteter();
 
             using (HttpClient client = new HttpClient())
             {
                 Task<string> resTask = client.GetStringAsync(URI + "/" + id);
                 String jsonStr = resTask.Result;
 
-                hotel = JsonConvert.DeserializeObject<Hotel>(jsonStr);
+                faciliteter = JsonConvert.DeserializeObject<Faciliteter>(jsonStr);
             }
 
-
-            return hotel;
+            return faciliteter;
         }
 
         private bool Delete(int id)
@@ -98,20 +94,19 @@ namespace ClassDemoRestConsumer
                 }
             }
 
-
             return ok;
         }
 
-        private bool Post(Hotel hotel)
+        private bool Post(Faciliteter faciliteter)
         {
             bool ok = true;
 
             using (HttpClient client = new HttpClient())
             {
-                String jsonStr = JsonConvert.SerializeObject(hotel);
+                String jsonStr = JsonConvert.SerializeObject(faciliteter);
                 StringContent content = new StringContent(jsonStr, Encoding.ASCII, "application/json");
 
-                Task<HttpResponseMessage> postAsync = client.PostAsync(URI,content);
+                Task<HttpResponseMessage> postAsync = client.PostAsync(URI, content);
 
                 HttpResponseMessage resp = postAsync.Result;
                 if (resp.IsSuccessStatusCode)
@@ -125,20 +120,19 @@ namespace ClassDemoRestConsumer
                 }
             }
 
-
             return ok;
         }
 
-        private bool Put(int id, Hotel hotel)
+        private bool Put(int id, Faciliteter faciliteter)
         {
             bool ok = true;
 
             using (HttpClient client = new HttpClient())
             {
-                String jsonStr = JsonConvert.SerializeObject(hotel);
+                String jsonStr = JsonConvert.SerializeObject(faciliteter);
                 StringContent content = new StringContent(jsonStr, Encoding.UTF8, "application/json");
 
-                Task<HttpResponseMessage> putAsync = client.PutAsync(URI+ "/" + id, content);
+                Task<HttpResponseMessage> putAsync = client.PutAsync(URI + "/" + id, content);
 
                 HttpResponseMessage resp = putAsync.Result;
                 if (resp.IsSuccessStatusCode)
@@ -152,11 +146,8 @@ namespace ClassDemoRestConsumer
                 }
             }
 
-
             return ok;
         }
-
-
 
     }
 }
